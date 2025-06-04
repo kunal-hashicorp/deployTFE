@@ -1,0 +1,35 @@
+pipeline {
+    agent any
+
+    environment {
+        GIT_REPO_URL = 'https://github.com/kunal-hashicorp/ec2provision.git'  // Replace with your repo
+        GIT_BRANCH = 'main' // Replace with desired branch
+        //GIT_CREDENTIALS_ID = 'your-git-credentials-id' // Optional, needed for private repos
+    }
+
+    stages {
+        stage('Checkout Code') {
+            steps {
+                git branch: "${GIT_BRANCH}",
+                    //credentialsId: "${GIT_CREDENTIALS_ID}", // Omit this line for public repos
+                    url: "${GIT_REPO_URL}"
+            }
+        }
+
+        stage('Print Directory') {
+            steps {
+                sh 'ls -l'
+                sh 'echo "Repo cloned successfully!"'
+            }
+        }
+    }
+
+    post {
+        failure {
+            echo "Pipeline failed!"
+        }
+        success {
+            echo "Pipeline completed successfully!"
+        }
+    }
+}
