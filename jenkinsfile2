@@ -16,8 +16,8 @@ pipeline {
         AWS_SECRET_ACCESS_KEY = "${params.AWS_SECRET_ACCESS_KEY}"
         AWS_SESSION_TOKEN = "${params.AWS_SESSION_TOKEN}"
         AWS_REGION = "${params.AWS_REGION}" // Also apply here for consistency if using a parameter
-        
-        PATH = "${tool 'terraform_0.15.5'}/bin:$PATH"
+        TERRAFORM_HOME = tool 'terraform_0.15.5'
+        //PATH = "${tool 'terraform_0.15.5'}/bin:$PATH"
     }
 
     stages {
