@@ -10,6 +10,8 @@ pipeline {
 
     environment {
         // CORRECTED LINES: Use double quotes to interpolate the parameter values
+        GIT_REPO_URL = 'https://github.com/kunal-hashicorp/ec2provision.git'  // Replace with your repo
+        GIT_BRANCH = 'main' // Replace with desired branch
         AWS_ACCESS_KEY_ID = "${params.AWS_ACCESS_KEY_ID}"
         AWS_SECRET_ACCESS_KEY = "${params.AWS_SECRET_ACCESS_KEY}"
         AWS_SESSION_TOKEN = "${params.AWS_SESSION_TOKEN}"
