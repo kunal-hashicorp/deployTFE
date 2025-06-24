@@ -1,6 +1,10 @@
 pipeline {
     agent any
 
+    tools {
+        terraform 'terraform-1.6.0' // Match the name from your Jenkins configuration
+    }
+
     parameters {
         string(name: 'AWS_ACCESS_KEY_ID', defaultValue: '', description: 'AWS Access Key ID for temporary credentials')
         password(name: 'AWS_SECRET_ACCESS_KEY', defaultValue: '', description: 'AWS Secret Access Key for temporary credentials')
@@ -9,81 +13,57 @@ pipeline {
     }
 
     environment {
-        // CORRECTED LINES: Use double quotes to interpolate the parameter values
-        GIT_REPO_URL = 'https://github.com/kunal-hashicorp/ec2provision.git'  // Replace with your repo
-        GIT_BRANCH = 'main' // Replace with desired branch
+        GIT_REPO_URL = 'https://github.com/kunal-hashicorp/ec2provision.git'
+        GIT_BRANCH = 'main'
         AWS_ACCESS_KEY_ID = "${params.AWS_ACCESS_KEY_ID}"
         AWS_SECRET_ACCESS_KEY = "${params.AWS_SECRET_ACCESS_KEY}"
         AWS_SESSION_TOKEN = "${params.AWS_SESSION_TOKEN}"
-        //AWS_REGION = "${params.AWS_REGION}" // Also apply here for consistency if using a parameter
-        //TERRAFORM_HOME = tool 'terraform_0.15.5'
-        //PATH = "${tool 'terraform_0.15.5'}/bin:$PATH"
-          PATH = "${tool 'terraform_0.15.5'}/bin:$PATH"
+        AWS_REGION = "${params.AWS_REGION}"
+        PATH = "${tool 'terraform-1.6.0'}/bin:$PATH"
     }
 
     stages {
         stage('Checkout Code') {
-           steps {
+            steps {
                 git branch: "${GIT_BRANCH}",
-                    //credentialsId: "${GIT_CREDENTIALS_ID}", // Omit this line for public repos
                     url: "${GIT_REPO_URL}"
             }
         }
 
         stage('Terraform Init') {
             steps {
-                script {
-                    // Navigate to the directory containing your Terraform files if not at repo root
-                    // sh 'cd terraform-code-dir'
-                    sh 'terraform init'
-                }
+                sh 'terraform init'
             }
         }
 
         stage('Terraform Plan') {
             steps {
-                script {
-                    // Navigate to the directory containing your Terraform files if not at repo root
-                    // sh 'cd terraform-code-dir'
-                    sh 'terraform plan -out=tfplan'
-                }
+                sh 'terraform plan -out=tfplan'
             }
         }
 
-       /* stage('Terraform Apply') {
-            // For production, consider adding an input step for manual approval:
-            // input message: 'Proceed with Terraform Apply?'
+        /* Uncomment these if needed later
 
+        stage('Terraform Apply') {
             steps {
-                script {
-                    // Navigate to the directory containing your Terraform files if not at repo root
-                    // sh 'cd terraform-code-dir'
-                    sh 'terraform apply -auto-approve tfplan' // Remove -auto-approve for manual confirmation
-                }
+                // input message: 'Proceed with Terraform Apply?'
+                sh 'terraform apply -auto-approve tfplan'
             }
-        } 
+        }
 
         stage('Terraform Destroy (Optional)') {
-            // This stage is typically triggered manually or for cleanup branches
             when {
-                // Example: Only run if a specific parameter is set
                 environment name: 'TRIGGER_DESTROY', value: 'true'
-                // Or if it's a specific branch for tear-down
-                // branch 'destroy-env-*'
             }
             steps {
-                script {
-                    // Navigate to the directory containing your Terraform files if not at repo root
-                    // sh 'cd terraform-code-dir'
-                    sh 'terraform destroy -auto-approve'
-                }
+                sh 'terraform destroy -auto-approve'
             }
-        } */
+        }
+        */
     }
 
     post {
         always {
-            // Clean up workspace
             deleteDir()
         }
         success {
