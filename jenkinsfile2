@@ -9,7 +9,6 @@ pipeline {
         string(name: 'AWS_ACCESS_KEY_ID', defaultValue: '', description: 'AWS Access Key ID for temporary credentials')
         password(name: 'AWS_SECRET_ACCESS_KEY', defaultValue: '', description: 'AWS Secret Access Key for temporary credentials')
         password(name: 'AWS_SESSION_TOKEN', defaultValue: '', description: 'AWS Session Token for temporary credentials')
-        string(name: 'AWS_REGION', defaultValue: 'us-east-1', description: 'AWS Region for deployment')
     }
 
     environment {
@@ -18,7 +17,6 @@ pipeline {
         AWS_ACCESS_KEY_ID = "${params.AWS_ACCESS_KEY_ID}"
         AWS_SECRET_ACCESS_KEY = "${params.AWS_SECRET_ACCESS_KEY}"
         AWS_SESSION_TOKEN = "${params.AWS_SESSION_TOKEN}"
-        AWS_REGION = "${params.AWS_REGION}"
         PATH = "${tool 'terraform-1.6.0'}/bin:$PATH"
     }
 
@@ -42,24 +40,12 @@ pipeline {
             }
         }
 
-        /* Uncomment these if needed later
-
         stage('Terraform Apply') {
             steps {
                 // input message: 'Proceed with Terraform Apply?'
                 sh 'terraform apply -auto-approve tfplan'
             }
         }
-
-        stage('Terraform Destroy (Optional)') {
-            when {
-                environment name: 'TRIGGER_DESTROY', value: 'true'
-            }
-            steps {
-                sh 'terraform destroy -auto-approve'
-            }
-        }
-        */
     }
 
     post {
