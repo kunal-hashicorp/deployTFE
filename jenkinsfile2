@@ -9,16 +9,13 @@ pipeline {
     }
 
     environment {
-        // Build parameters are automatically available in the 'params' object.
-        // You can directly assign them to environment variables.
-        // Jenkins will mask Password parameters in the console output.
-        AWS_ACCESS_KEY_ID = params.AWS_ACCESS_KEY_ID
-        AWS_SECRET_ACCESS_KEY = params.AWS_SECRET_ACCESS_KEY
-        AWS_SESSION_TOKEN = params.AWS_SESSION_TOKEN
-        //AWS_REGION = params.AWS_REGION // Or you can keep this hardcoded if always the same
+        // CORRECTED LINES: Use double quotes to interpolate the parameter values
+        AWS_ACCESS_KEY_ID = "${params.AWS_ACCESS_KEY_ID}"
+        AWS_SECRET_ACCESS_KEY = "${params.AWS_SECRET_ACCESS_KEY}"
+        AWS_SESSION_TOKEN = "${params.AWS_SESSION_TOKEN}"
+        AWS_REGION = "${params.AWS_REGION}" // Also apply here for consistency if using a parameter
         
-        // Ensure the Terraform executable is in the PATH or specify its path
-        PATH = "${tool 'terraform_0.15.5'}/bin:$PATH" // Replace 'terraform_0.15.5' with your configured Terraform tool name
+        PATH = "${tool 'terraform_0.15.5'}/bin:$PATH"
     }
 
     stages {
