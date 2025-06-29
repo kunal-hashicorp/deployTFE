@@ -6,7 +6,7 @@ pipeline {
     }
 
     parameters {
-        string(name: 'AWS_ACCESS_KEY_ID', defaultValue: '', description: 'AWS Access Key ID for temporary credentials')
+        password(name: 'AWS_ACCESS_KEY_ID', defaultValue: '', description: 'AWS Access Key ID for temporary credentials')
         password(name: 'AWS_SECRET_ACCESS_KEY', defaultValue: '', description: 'AWS Secret Access Key for temporary credentials')
         password(name: 'AWS_SESSION_TOKEN', defaultValue: '', description: 'AWS Session Token for temporary credentials')
     }
@@ -27,6 +27,22 @@ pipeline {
                     url: "${GIT_REPO_URL}"
             }
         }
+
+        stage('Debug AWS Identity') {
+    steps {
+        sh '''
+            echo "==== AWS Caller Identity ===="
+            aws sts get-caller-identity
+
+            echo "==== IAM Role Permissions Test ===="
+            aws iam get-role --role-name ec2-instance-role_ks || echo "Access Denied to GetRole"
+
+            echo "==== IAM Instance Profile Test ===="
+            aws iam get-instance-profile --instance-profile-name ec2-instance-profile || echo "Access Denied to GetInstanceProfile"
+        '''
+    }
+}
+
 
         stage('Terraform Init') {
             steps {
