@@ -28,22 +28,6 @@ pipeline {
             }
         }
 
-        stage('Debug AWS Identity') {
-    steps {
-        sh '''
-            echo "==== AWS Caller Identity ===="
-            aws sts get-caller-identity
-
-            echo "==== IAM Role Permissions Test ===="
-            aws iam get-role --role-name ec2-instance-role_ks || echo "Access Denied to GetRole"
-
-            echo "==== IAM Instance Profile Test ===="
-            aws iam get-instance-profile --instance-profile-name ec2-instance-profile || echo "Access Denied to GetInstanceProfile"
-        '''
-    }
-}
-
-
         stage('Terraform Init') {
             steps {
                 sh 'terraform init'
