@@ -13,7 +13,7 @@ pipeline {
 
     environment {
         GIT_REPO_URL = 'https://github.com/kunal-hashicorp/ec2provision.git'
-        GIT_BRANCH = 'main'
+        GIT_BRANCH = 'feature/test'
         AWS_ACCESS_KEY_ID = "${params.AWS_ACCESS_KEY_ID}"
         AWS_SECRET_ACCESS_KEY = "${params.AWS_SECRET_ACCESS_KEY}"
         AWS_SESSION_TOKEN = "${params.AWS_SESSION_TOKEN}"
