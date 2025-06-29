@@ -36,7 +36,7 @@ pipeline {
 
         stage('Terraform Plan') {
             steps {
-                sh 'terraform import aws_iam_instance_profile.ec2_profile ec2-instance-profile || true'
+               // sh 'terraform import aws_iam_instance_profile.ec2_profile ec2-instance-profile || true'
                 sh 'terraform plan -out=tfplan'
             }
         }
